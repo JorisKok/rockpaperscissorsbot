@@ -14,6 +14,7 @@
     "verbose": true
   },
   "dependencies": {
-    "dotenv": "^6.2.0"
+    "dotenv": "^6.2.0",
+    "tmi.js": "^1.4.1"
   }
 }

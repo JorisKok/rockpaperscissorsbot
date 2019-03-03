@@ -1,13 +1,7 @@
 const Game = require('../game');
 
-test('A game can be started', () => {
+test('When a new game is started, votes are empty', () => {
   let game = new Game();
-  expect(game.start()).toEqual(true);
-});
-
-test('When starting a game, votes are empty', () => {
-  let game = new Game();
-  game.start();
   expect(game._getVotes()).toEqual({
     'rock': [],
     'paper': [],
@@ -17,7 +11,6 @@ test('When starting a game, votes are empty', () => {
 
 test('We can vote rock', () => {
   let game = new Game();
-  game.start();
   game.voteRock('Pete1');
   expect(game._getVotes()).toEqual({
     'paper': [],
@@ -30,7 +23,6 @@ test('We can vote rock', () => {
 
 test('We can vote paper', () => {
   let game = new Game();
-  game.start();
   game.votePaper('Pete1');
   expect(game._getVotes()).toEqual({
     'rock': [],
@@ -43,7 +35,6 @@ test('We can vote paper', () => {
 
 test('We can vote scissors', () => {
   let game = new Game();
-  game.start();
   game.voteScissors('Pete1');
   expect(game._getVotes()).toEqual({
     'rock': [],
@@ -56,7 +47,6 @@ test('We can vote scissors', () => {
 
 test('Users cannot vote twice, when voting the same type', () => {
   let game = new Game();
-  game.start();
   game.voteScissors('Pete1');
   game.voteScissors('Pete1');
   expect(game._getVotes()).toEqual({
@@ -70,7 +60,6 @@ test('Users cannot vote twice, when voting the same type', () => {
 
 test('Users cannot vote twice, when voting on different types', () => {
   let game = new Game();
-  game.start();
   game.votePaper('Pete1');
   game.voteRock('Pete1');
   expect(game._getVotes()).toEqual({
@@ -82,7 +71,7 @@ test('Users cannot vote twice, when voting on different types', () => {
   });
 });
 
-test('A game can be finished', () => {
+test('We can finish a game', () => {
   let game = new Game();
   game.votePaper('Pete');
   game.votePaper('Jane');
@@ -97,6 +86,17 @@ test('A game can be finished', () => {
       'Jeroen'
     ]
   })
+});
+
+test('When we finish a game, it resets the votes', () => {
+  let game = new Game();
+  game.votePaper('Pete');
+  game.finish();
+  expect(game._getVotes()).toEqual({
+    'rock': [],
+    'paper': [],
+    'scissors': [],
+  });
 });
 
 test('A game can end in a draw, when two end in the same (winning) score', () => {
@@ -128,7 +128,7 @@ test('A game is not influenced when the losers end in a draw', () => {
 });
 
 test('A game can end in a draw, when all three are the same', () => {
-   let game = new Game();
+  let game = new Game();
   game.voteRock('Pete');
   game.votePaper('Jane');
   game.voteScissors('Anna');
@@ -136,3 +136,4 @@ test('A game can end in a draw, when all three are the same', () => {
     'result': 'Draw',
   })
 });
+

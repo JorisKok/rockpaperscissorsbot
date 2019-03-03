@@ -3,20 +3,19 @@
  */
 class Game {
   constructor() {
+    this._resetVotes();
+  }
+
+  /**
+   * Reset the votes
+   * @private
+   */
+  _resetVotes() {
     this._votes = {
       'rock': [],
       'paper': [],
       'scissors': [],
     };
-  }
-
-  /**
-   * Start a new game
-   *
-   * @returns {boolean}
-   */
-  start() {
-    return true;
   }
 
   /**
@@ -83,7 +82,11 @@ class Game {
    * @return Object
    */
   finish() {
-    return this._calculateResults();
+    let result = this._calculateResults();
+
+    this._resetVotes();
+
+    return result;
   }
 
   /**
