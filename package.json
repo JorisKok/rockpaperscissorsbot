@@ -1,0 +1,19 @@
+{
+  "name": "rockpaperscissorsbot",
+  "version": "1.0.0",
+  "description": "Rock paper scissors game",
+  "main": "game.js",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^24.1.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "verbose": true
+  },
+  "dependencies": {
+    "dotenv": "^6.2.0"
+  }
+}
