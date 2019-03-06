@@ -115,7 +115,7 @@ test('A game is not influenced when the losers end in a draw', () => {
   game.votePaper('Jane');
   game.voteScissors('Anna');
   expect(game.finish()).toEqual({
-    'result': 'Rock wins',
+    'result': 'Rock',
     'winners': [
       'Pete',
       'Peter'

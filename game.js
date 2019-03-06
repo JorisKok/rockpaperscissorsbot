@@ -106,7 +106,7 @@ class Game {
     let losers = this._getLosers();
 
     return {
-      'result': `${this._getWinningTypeWithFirstCharCapitalized()} wins`,
+      'result': this._getWinningTypeWithFirstCharCapitalized(),
       'winners': winners,
       'losers': losers,
     };

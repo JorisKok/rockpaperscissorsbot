@@ -1,7 +1,8 @@
 require('dotenv').config();
 
 const tmi = require('tmi.js');
-const Game = require('./game');
+const GameHandler = require('./game_handler');
+const ChannelHandler = require('./channel_handler');
 
 // Define configuration options
 const opts = {
@@ -10,7 +11,7 @@ const opts = {
     password: process.env.PASSWORD,
   },
   channels: [
-    'twitchmedia4',
+    process.env.CHANNEL
   ]
 };
 
@@ -24,7 +25,17 @@ client.on('connected', onConnectedHandler);
 // Connect to Twitch:
 client.connect();
 
-let game = null;
+//  TODO update readme
+
+// The channel handler
+let channel = new ChannelHandler(client, `#${process.env.CHANNEL}`);
+
+// The game handler
+let handler = new GameHandler(function() {
+  // Send a message to the channel when finished
+  channel.sayFinish(handler.finish());
+}, process.env.FINISH_TIME);
+
 
 // Called every time a message comes in
 function onMessageHandler(target, context, msg, self) {
@@ -41,41 +52,25 @@ function onMessageHandler(target, context, msg, self) {
   // If the command is known, let's execute it
   switch (commandName) {
     case 'rock':
-      // client.say(target, `You are ${user}`);
-      if (game == null) {
-        game = new Game();
-      }
-      game.voteRock(user);
-      console.log(`* Voted ${commandName}`);
+      handler.startGameIfNotStartedYet();
+      handler.voteRock(user);
+      channel.sayVoted();
       break;
 
     case 'paper':
-      if (game == null) {
-        game = new Game();
-      }
-      game.votePaper(user);
-      console.log(`* Executed ${commandName} command`);
+      handler.startGameIfNotStartedYet();
+      handler.votePaper(user);
+      channel.sayVoted();
       break;
 
     case 'scissors':
-      if (game == null) {
-        game = new Game();
-      }
-      game.voteScissors(user);
-
-      console.log(`* Executed ${commandName} command`);
+      handler.startGameIfNotStartedYet();
+      handler.voteScissors(user);
+      channel.sayVoted(target);
       break;
-
-    case 'finish':
-      if (game == null) {
-        game = new Game();
-      }
-      let result = game.finish();
-      console.log(result);
-    break;
-    default:
-      console.log(`* Unknown command ${commandName}`);
   }
+
+  console.log(`Received msg: ${msg}`);
 }
 
 
