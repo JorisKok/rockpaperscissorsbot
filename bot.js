@@ -1,8 +1,8 @@
 require('dotenv').config();
 
 const tmi = require('tmi.js');
-const GameHandler = require('./game_handler');
-const ChannelHandler = require('./channel_handler');
+const GameHandler = require('./lib/game/game_handler');
+const ChannelHandler = require('./lib/channel/channel_handler');
 
 // Define configuration options
 const opts = {
@@ -44,30 +44,69 @@ function onMessageHandler(target, context, msg, self) {
   } // Ignore messages from the bot
 
   // Remove whitespace from chat message
-  const commandName = msg.trim().slice(1);
+  const commandName = msg.trim();
 
   // Get the username
   let user = context.username;
 
   // If the command is known, let's execute it
   switch (commandName) {
-    case 'rock':
-      handler.startGameIfNotStartedYet();
-      handler.voteRock(user);
-      channel.sayVoted();
+    case '!start':
+      // Only the channel owner can start a game
+      if (user === process.env.CHANNEL) {
+        handler.startGameIfNotStartedYet();
+        channel.sayStarted();
+      }
       break;
 
-    case 'paper':
-      handler.startGameIfNotStartedYet();
-      handler.votePaper(user);
-      channel.sayVoted();
+    case '!aRock':
+    case '!arock':
+      if (handler.isStarted()) {
+        handler.voteRockA(user);
+        channel.sayVoted();
+      }
       break;
 
-    case 'scissors':
-      handler.startGameIfNotStartedYet();
-      handler.voteScissors(user);
-      channel.sayVoted(target);
+    case '!aPaper':
+    case '!apaper':
+      if (handler.isStarted()) {
+        handler.votePaperA(user);
+        channel.sayVoted();
+      }
       break;
+
+    case '!aScissors':
+    case '!ascissors':
+      if (handler.isStarted()) {
+        handler.voteScissorsA(user);
+        channel.sayVoted();
+      }
+      break;
+      
+    case '!bRock':
+    case '!brock':
+      if (handler.isStarted()) {
+        handler.voteRockB(user);
+        channel.sayVoted();
+      }
+      break;
+
+    case '!bPaper':
+    case '!bpaper':
+      if (handler.isStarted()) {
+        handler.votePaperB(user);
+        channel.sayVoted();
+      }
+      break;
+
+    case '!bScissors':
+    case '!bscissors':
+      if (handler.isStarted()) {
+        handler.voteScissorsB(user);
+        channel.sayVoted();
+      }
+      break;
+      
   }
 
   console.log(`Received msg: ${msg}`);
